@@ -35,24 +35,26 @@
     enum assign_kind assignkind;
 }
 
-%token <rootN>  translation_unit external_declaration
-%token <funcN>  function_definition
-%token <IDN> IDENTIFIER identifier_list
-%token <declarationN> declaration declaration_list
-%token <declaratorN>  declarator init_declarator init_declarator_list
-%token <initN>  initializer
-%token <initl>  initializer_list
-%token <design> designation designator_list designator
-%token <paraN>  paramter_declaration parameter_list
-%token <statN>  designator statement labeled_statement compound_statement block_item_list block_item expression_statement
-%token <statN>  selection_statement iteration_statement jump_statement translation_unit external_declaration function_definition
-%token <block>  block_item block_item_list
+%type <rootN>  translation_unit external_declaration
+%type <funcN>  function_definition
+%token <IDN> IDENTIFIER
+%type  <IDN> identifier_list
+%type <declarationN> declaration declaration_list
+%type <declaratorN>  declarator init_declarator init_declarator_list
+%type <initN>  initializer
+%type <initl>  initializer_list
+%type <design> designation designator_list designator
+%type <paraN>  parameter_declaration parameter_list
+%type <statN>  statement labeled_statement compound_statement expression_statement
+%type <statN>  selection_statement iteration_statement jump_statement
+%type <block>  block_item block_item_list
 %token <expN> CONSTANT STRING_LITERAL SIZEOF CONSTANT_INT CONSTANT_DOUBLE TRUE FALSE
-%token <expN> primary_expression postfix_expression argument_expression_list unary_expression unary_operator
-%token <expN> multiplicative_expression additive_expression shift_expression relational_expression equality_expression
-%token <expN> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
-%token <expN> assignment_expression assignment_operator expression
+%type <expN> primary_expression postfix_expression argument_expression_list unary_expression unary_operator
+%type <expN> multiplicative_expression additive_expression shift_expression relational_expression equality_expression
+%type <expN> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
+%type <expN> assignment_expression assignment_operator expression
 %token <typekind>  CHAR INT DOUBLE VOID BOOL
+%type  <typekind>  type_specifier
 %token <assignkind> SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN XOR_ASSIGN OR_ASSIGN TYPE_NAME
 %token CASE IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP AND_OP OR_OP
@@ -71,7 +73,7 @@ translation_unit {//创建一个根节点
 /*基本表达式*/
 primary_expression:
 IDENTIFIER {
-    $$ = create_tree($1->line,0);//$1是ID_Node
+    $$ = create_exp_tree($1->line,0);//$1是ID_Node
     $$->info.prim_info.detail.ID = $1;
 }
 |
@@ -600,7 +602,7 @@ IDENTIFIER {
 }
 | '(' declarator ')' {
     //.....
-    $$ = $1;
+    $$ = $2;
 }
 | declarator '[' assignment_expression ']' {
     //数组

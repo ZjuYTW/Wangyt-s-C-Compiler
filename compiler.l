@@ -1,4 +1,3 @@
-
 %{
     #include "y.tab.h"
     #include <cstdio>
@@ -14,7 +13,7 @@
     int check_type();
     int column = 0;
     
-    %}
+%}
 
 %option yylineno
 
@@ -55,7 +54,6 @@ IS          ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 0[xX]{H}+{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*16进制*/}
 0[0-7]*{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*8进制*/}
 [1-9]{D}*{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*10进制*/}
-//L?'(\\.|[^\\'\n])+'        { count(); return(CONSTANT); }
 
 {D}+{E}{FS}?                { count(); yylval.gt = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
 {D}*"."{D}+{E}?{FS}?        { count(); yylval.gt = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
@@ -64,8 +62,6 @@ IS          ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 0[xX]{H}*"."{H}+{P}?{FS}?   { count(); return(CONSTANT); }
 0[xX]{H}+"."{H}*{P}?{FS}?   { count(); return(CONSTANT); }
 
-
-//L?\"(\\.|[^\\"\n])*\"    { count();  yylval.gt =create_tree("STRING_LITERAL",0,yylineno);    return(STRING_LITERAL); /*字符串常量*/}  实际没有给字符串设计一个语法规则
 
 ">>="    { count(); return(RIGHT_ASSIGN); }
 "<<="    { count(); return(LEFT_ASSIGN); }
@@ -170,4 +166,3 @@ int check_type() {
     
     return IDENTIFIER;
 }
-
