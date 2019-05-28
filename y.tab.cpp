@@ -3349,9 +3349,9 @@ void yyerror(char const *s)
 
 
 int main(int argc,char* argv[]) {
-    
-    yyin = fopen(argv[1],"r");
-    
+    yyin = fopen("/Users/egoist/Desktop/code.c","r");
+    if(yyin == NULL)
+        exit(1);
     //freopen("output/output.txt","w", stdout);
     yyparse();
     printf("\n");

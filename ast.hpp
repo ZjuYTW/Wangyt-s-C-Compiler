@@ -4,6 +4,7 @@
 #include <string>
 #include "y.tab.hpp"
 #include "enums_type.h"
+
 using namespace std;
 /*一共有五种tree_Node
   root_node ☑️
@@ -182,7 +183,7 @@ struct exp_Node{
         struct{
             prim_kind type2;//{ID,TRUE,FALSE,CONSTAN_INT,CONSTANT_DOUBLE,prim_NA}
             union{
-                string val;//除了ID以外的信息存在val中
+                char* val;//除了ID以外的信息存在val中
                 ID_Node* ID;
                 struct exp_Node *exp;
             }detail;

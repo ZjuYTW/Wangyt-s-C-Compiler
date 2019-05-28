@@ -140,12 +140,12 @@ void count(void)
     int i;
     
     for (i = 0; yytext[i] != '\0'; i++)
-    if (yytext[i] == '\n')
-    column = 0;
+        if (yytext[i] == '\n')
+            column = 0;
     else if (yytext[i] == '\t')
-    column += 4 - (column % 4);
+        column += 4 - (column % 4);
     else
-    column++;
+        column++;
     ECHO;
 }
 
