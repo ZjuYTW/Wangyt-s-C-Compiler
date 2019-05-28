@@ -2,7 +2,8 @@
 #define ast_hpp
 #include <stdio.h>
 #include <string>
-
+#include "y.tab.hpp"
+#include "enums_type.h"
 using namespace std;
 /*一共有五种tree_Node
   root_node ☑️
@@ -17,63 +18,11 @@ using namespace std;
  */
 
 
-/*这个枚举类型应用在root_Node上（只用到Func_T,Decl_T,NA）
- */
-enum root_kind {Func_T,Decl_T,Stat_T,root_NA};//root_NA表示不属于前几类
-
-enum type_specifier_kind {VOID,CHAR,INT,DOUBLE,BOOL};
-
-enum declarator_kind {DECL,INITED};
-
-enum declarator_kind2 {Identifier,ARRAY,FUNC};
-
-enum decl_arr_kind {ASSIG_EXP,STAR,arr_NA};
-
-enum decl_func_kind {PARAM,IDENT,func_NA};
-
-enum list_kind {SINGLE,GROUP}; //这个枚举类型用在initial_Node与initial_list上面，表示到底是一个赋值还是多个赋值，具体的应用可以看结构体内部的注释
-
-enum designator_kind {ARRAY_INDEX,MEMBER};
-
-enum stat_kind {LABEL,COMPOUND,EXP,SELECT,ITER,JUMP};
-
-enum select_kind {IF,IF_ELSE,SWITCH};
-
-/*FOR1是括号内有两个exp_stat，例如 for(i=0;i<10;)
- FOR2是两个exp_stat后面还有一个exp eg.for(i=0;i<10;i++)
- FOR3是第一个是decl,第二个是exp，eg.for(int i=0;i<10)
- FOR4是三个句子，类比上面的。。
- */
-enum iter_kind {WHILE,DO_WHILE,FOR1,FOR2,FOR3,FOR4};
-
-enum jump_kind {GOTO,CONTINUE,BREAK,RETURN1,RETURN2};
-
-enum exp_kind {PRIM,POST,ASSIG,Logcial_OR,Logcial_AND,IOR,XOR,AND,EQUAL,RELAT,SHIFT,ADD,MUL,UNARY,ARUG,exp_NA};
-
-enum prim_kind {ID,TRUE,FALSE,CONSTAN_INT,CONSTANT_DOUBLE,prim_NA};
-
-enum postfix_kind {ARRAY_CALL,FUNC_CALL,INC,DEC,post_NA};
-
-enum assign_kind {ASSIGNMENT,MUL_ASSIGN,DIV_ASSIGN,MOD_ASSIGN,ADD_ASSIGN,SUB_ASSIGN,LEFT_ASSIGN,RIGHT_ASSIGN,AND_ASSIGN,XOR_ASSIGN,OR_ASSIGN,assign_NA};
-
-enum equal_kind {EQ,NE,equal_NA};
-
-enum relation_kind {LES,GT,LE,GE,relation_NA};//为了区分每一个NA，给NA编了一个号
-
-enum shift_kind {LEFT,RIGHT,shift_NA};
-
-enum add_kind {ADD_OP,MINUS_OP,add_NA};
-
-enum mul_kind {MUL_OP,DIV_OP,MOD,mul_NA};
-
-enum unary_kind {INC_OP,DEC_OP,POS,NEG,BIT_NEG,FEI,unary_NA};//按位取反 ~, 非 !
-
-
 struct root_Node{//整个大类上分为声明以及函数节点
     root_kind type;//{Func_T,Decl_T,Stat_T,root_NA};
     union{
         struct func_Node* func_tree;
-        struct decl_Node* decl_tree;
+        struct declaration_Node* decl_tree;
     }son;
     root_Node *next;
 };
@@ -126,7 +75,7 @@ struct declarator_Node{
                     struct declarator_Node* decl_tree;
                     union{
                         struct param_Node* param_list;
-                        struct declarator_Node* ID_list;
+                        struct ID_Node* ID_list;
                     }list;
                 }func_info;
             }detail;
@@ -145,7 +94,7 @@ struct declarator_Node{
 struct initializer_Node{
     list_kind type;//也就是单独一个赋值语句或者用列表赋值
     union{
-        struct exp_Node* assig_exp;
+        struct exp_Node* assign_exp;
         struct initial_list* init_list;
     }info;
 };
@@ -202,9 +151,9 @@ struct stat_Node{
             iter_kind type2;//{WHILE,DO_WHILE,FOR1,FOR2,FOR3,FOR4};
             struct exp_Node* exp;
             struct stat_Node* stat1;
-            struct exp_Node* stat2;
-            struct exp_Node* stat3;
-            struct decl_Node* decl;
+            struct stat_Node* stat2;
+            struct stat_Node* stat3;
+            struct declaration_Node* decl;
         }iter_info;
         
         struct{
@@ -213,11 +162,11 @@ struct stat_Node{
             struct exp_Node* exp;
         }jump_info;
     }stat_info;
-    
+    int line;
 };
 
 struct block_item{
-    struct decl_Node *declaration;
+    struct declaration_Node *declaration;
     struct stat_Node *statement;
     struct block_item *next;
 };
@@ -247,7 +196,7 @@ struct exp_Node{
             struct exp_Node* unary_exp;//如果是logical_or_exp的规约（也就是type2为assign_NA），就去unary_exp中找
             struct exp_Node* assign_exp;
             assign_kind type2;//{ASSIGNMENT,MUL_ASSIGN,DIV_ASSIGN,MOD_ASSIGN,ADD_ASSIGN,SUB_ASSIGN,LEFT_ASSIGN,RIGHT_ASSIGN,AND_ASSIGN,XOR_ASSIGN,OR_ASSIGN,assign_NA}
-        }assig_info;
+        }assign_info;
         struct{
             struct exp_Node* logical_or_exp;
             struct exp_Node* logical_and_exp;
@@ -306,4 +255,21 @@ struct exp_Node{
     }info;
     int line;
 };
+
+
+ID_Node* create_ID(int linenum);
+exp_Node* create_exp_tree(int linenum,int type);
+exp_Node* create_exp_tree(int type);
+root_Node* create_root();
+declaration_Node* create_declaration_tree(type_specifier_kind type);
+declarator_Node* create_declarator_tree(declarator_Node* decl_list, initializer_Node* init);
+declarator_Node* create_declarator_tree(int type);
+param_Node* create_param_tree(enum type_specifier_kind type);
+initializer_Node* create_initializer_tree(int type);
+initial_list* create_initial_list_tree(int type);
+designator* create_design_tree(int type);
+stat_Node* create_stat_tree(int type);
+block_item *create_block_tree();
+root_Node *create_root_tree(void);
+func_Node *create_func_tree(type_specifier_kind type);
 #endif /* ast_hpp */

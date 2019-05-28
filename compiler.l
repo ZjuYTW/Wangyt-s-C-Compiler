@@ -1,10 +1,10 @@
 %{
-    #include "y.tab.h"
+    #include "y.tab.hpp"
     #include <cstdio>
     #include <cstdlib>
     #include <cstring>
-    #include "ast.h"
-    #include "Praser.h"
+    #include "ast.hpp"
+    /*#include "paraser.hpp"*/
     #include <iostream>
     using namespace std;
     
@@ -49,15 +49,15 @@ IS          ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 "true"            { count(); return(TRUE); }
 "false"            { count();  return(FALSE); }
 
-{L}({L}|{D})*     {count(); yylval.gt = create_ID(yylineno);return(check_type());/*IDENTIFIER*/ }
+{L}({L}|{D})*     {count(); yylval.IDN = create_ID(yylineno);return(check_type());/*IDENTIFIER*/ }
 
-0[xX]{H}+{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*16进制*/}
-0[0-7]*{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*8进制*/}
-[1-9]{D}*{IS}?    { count(); yylval.gt = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*10进制*/}
+0[xX]{H}+{IS}?    { count(); yylval.expN = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*16进制*/}
+0[0-7]*{IS}?    { count(); yylval.expN = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*8进制*/}
+[1-9]{D}*{IS}?    { count(); yylval.expN = create_exp_tree(yylineno,3);return(CONSTANT_INT); /*10进制*/}
 
-{D}+{E}{FS}?                { count(); yylval.gt = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
-{D}*"."{D}+{E}?{FS}?        { count(); yylval.gt = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
-{D}+"."{D}*{E}?{FS}?        { count(); yylval.gt = create_exo_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
+{D}+{E}{FS}?                { count(); yylval.expN = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
+{D}*"."{D}+{E}?{FS}?        { count(); yylval.expN = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
+{D}+"."{D}*{E}?{FS}?        { count(); yylval.expN = create_exp_tree(yylineno,3);    return(CONSTANT_DOUBLE); /*浮点数*/}
 0[xX]{H}+{P}{FS}?            { count(); return(CONSTANT); }
 0[xX]{H}*"."{H}+{P}?{FS}?   { count(); return(CONSTANT); }
 0[xX]{H}+"."{H}*{P}?{FS}?   { count(); return(CONSTANT); }

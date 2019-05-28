@@ -2,16 +2,16 @@
     #include <cstdlib>
     #include <cstdio>
     #include <string>
-    #include "tree.h"
-    #include "block.h"
-    #include "Praser.h"
+    #include "ast.hpp"
+    #include "block.hpp"
+    /*#include "parser.hpp"*/
     using namespace std;
     
     extern char *yytext;
     extern int column;
     extern FILE * yyin;
     extern FILE * yyout;
-    gramTree *root;
+    root_Node *root;
     extern int yylineno;
     
     int yylex(void);
@@ -31,8 +31,9 @@
     struct stat_Node* statN;
     struct block_item* block;
     struct exp_Node* expN;
-    enum type_specifer_kind typekind;
+    enum type_specifier_kind typekind;
     enum assign_kind assignkind;
+    enum unary_kind arykind;
 }
 
 %type <rootN>  translation_unit external_declaration
@@ -49,15 +50,17 @@
 %type <statN>  selection_statement iteration_statement jump_statement
 %type <block>  block_item block_item_list
 %token <expN> CONSTANT STRING_LITERAL SIZEOF CONSTANT_INT CONSTANT_DOUBLE TRUE FALSE
-%type <expN> primary_expression postfix_expression argument_expression_list unary_expression unary_operator
+%type <expN> primary_expression postfix_expression argument_expression_list unary_expression
 %type <expN> multiplicative_expression additive_expression shift_expression relational_expression equality_expression
 %type <expN> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
-%type <expN> assignment_expression assignment_operator expression
+%type <expN> assignment_expression expression
 %token <typekind>  CHAR INT DOUBLE VOID BOOL
 %type  <typekind>  type_specifier
-%token <assignkind> SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN XOR_ASSIGN OR_ASSIGN TYPE_NAME
+%type  <arykind>   unary_operator
+%type  <assignkind> assignment_operator
 %token CASE IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP AND_OP OR_OP
+%token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN XOR_ASSIGN OR_ASSIGN TYPE_NAME
 %token ';' ',' ':' '=' '[' ']' '.' '&' '!' '~' '-' '+' '*' '/' '%' '<' '>' '^' '|' '?' '{' '}' '(' ')'
 
 %nonassoc LOWER_THAN_ELSE
@@ -93,7 +96,7 @@ FALSE {
 }
 
 | '(' expression ')'{
-    $$ = create_tree($2->line,5);
+    $$ = create_exp_tree($2->line,5);
     $$ ->info.prim_info.detail.exp = $2;
 }
 ;
@@ -122,7 +125,7 @@ primary_expression{
     $$->info.post_info.post_exp = $1;
     $$->info.post_info.arg_list = NULL;
     $$->line = $1->line;
-//函数调用
+    //函数调用
 }
 |     postfix_expression '(' argument_expression_list ')'{
     $$ = create_exp_tree(1);
@@ -153,16 +156,16 @@ primary_expression{
 argument_expression_list:
 assignment_expression{
     $$ = create_exp_tree(14);
-    $$->info.arugument_info.type2 = SINGLE;
-    $$->info.arugument_info.argu_exp = $1;
-    $$->info.arugument_info.assig_exp = NULL;
+    $$->info.argument_info.type2 = SINGLE;
+    $$->info.argument_info.argu_exp = $1;
+    $$->info.argument_info.assig_exp = NULL;
     $$->line = $1->line;
 }
 |     argument_expression_list ',' assignment_expression {
     $$ = create_exp_tree(14);
-    $$->info.arugument_info.type2 = GROUP;
-    $$->info.arugument_info.argu_exp = $1;
-    $$->info.arugument_info.assig_exp = $3;
+    $$->info.argument_info.type2 = GROUP;
+    $$->info.argument_info.argu_exp = $1;
+    $$->info.argument_info.assig_exp = $3;
     $$->line = $1->line;
 }
 ;
@@ -180,7 +183,7 @@ postfix_expression{
 |     INC_OP unary_expression{
     //++
     $$ = create_exp_tree(13);
-    $$->info.unary_info.type2 = INC_OP;
+    $$->info.unary_info.type2 = t_INC_OP;
     $$->info.unary_info.unary_exp = $2;
     $$->info.unary_info.post_exp = NULL;
     $$->line = $2->line;
@@ -188,7 +191,7 @@ postfix_expression{
 |     DEC_OP unary_expression{
     //--
     $$ = create_exp_tree(13);
-    $$->info.unary_info.type2 = DEC_OP;
+    $$->info.unary_info.type2 = t_DEC_OP;
     $$->info.unary_info.unary_exp = $2;
     $$->info.unary_info.post_exp = NULL;
     $$->line = $2->line;
@@ -413,7 +416,7 @@ exclusive_or_expression {
 | inclusive_or_expression '|' exclusive_or_expression {
     $$ = create_exp_tree(5);
     $$->info.incl_or_info.inclusive_or_exp = $1;
-    $$->info.incl_or_info.exclusive_exp = $3;
+    $$->info.incl_or_info.exclusive_or_exp = $3;
     $$->line = $1->line;
 }
 ;
@@ -457,16 +460,16 @@ assignment_expression:
 logical_or_expression {
     //条件表达式
     $$ = create_exp_tree(2);
-    $$->info.assig_info.type2 = assign_NA;
+    $$->info.assign_info.type2 = assign_NA;
     $$->info.assign_info.unary_exp = $1;
     $$->info.assign_info.assign_exp =  NULL;
     $$->line = $1->line;
 }
 | unary_expression assignment_operator assignment_expression {
     $$ = create_exp_tree(2);
-    $$->info.assig_info.type2 = $2;
+    $$->info.assign_info.type2 = $2;
     $$->info.assign_info.unary_exp = $1;
-    $$->info.assign_info.assign_exp =  $2;
+    $$->info.assign_info.assign_exp =  $3;
     $$->line = $1->line;
 }
 ;
@@ -474,47 +477,47 @@ logical_or_expression {
 /*赋值运算符*/
 assignment_operator:
 '=' {
-    $$ = ASSIGNMENT;
+    $$ = t_ASSIGNMENT;
 }
 | MUL_ASSIGN {
     //*=
-    $$ = MUL_ASSIGN;
+    $$ = t_MUL_ASSIGN;
 }
 | DIV_ASSIGN {
     // /=
-    $$ = DIV_ASSIGN;
+    $$ = t_DIV_ASSIGN;
 }
 | MOD_ASSIGN {
     // %=
-    $$ = MOD_ASSIGN;
+    $$ = t_MOD_ASSIGN;
 }
 | ADD_ASSIGN {
     // +=
-    $$ = ADD_ASSIGN;
+    $$ = t_ADD_ASSIGN;
 }
 | SUB_ASSIGN {
     // -=
-    $$ = SUB_ASSIGN;
+    $$ = t_SUB_ASSIGN;
 }
 | LEFT_ASSIGN {
     // <<=
-    $$ = LEFT_ASSIGN;
+    $$ = t_LEFT_ASSIGN;
 }
 | RIGHT_ASSIGN {
     // >>=
-    $$ = RIGHT_ASSIGN;
+    $$ = t_RIGHT_ASSIGN;
 }
 | AND_ASSIGN {
     // &=
-    $$ = AND_ASSIGN;
+    $$ = t_AND_ASSIGN;
 }
 | XOR_ASSIGN {
     // ^=
-    $$ = XOR_ASSIGN);
+    $$ = t_XOR_ASSIGN;
 }
 | OR_ASSIGN {
     // |=
-    $$ = OR_ASSIGN;
+    $$ = t_OR_ASSIGN;
 }
 ;
 
@@ -556,7 +559,7 @@ init_declarator {
 | init_declarator_list ',' init_declarator {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $3;
 }
 ;
@@ -575,19 +578,19 @@ declarator {
 /*类型说明符*/
 type_specifier:
 VOID {
-    $$ = VOID;
+    $$ = t_VOID;
 }
 | CHAR {
-    $$ = CHAR;
+    $$ = t_CHAR;
 }
 | INT {
-    $$ = INT;
+    $$ = t_INT;
 }
 | DOUBLE {
-    $$ = DOUBLE;
+    $$ = t_DOUBLE;
 }
 | BOOL {
-    $$ = BOOL;
+    $$ = t_BOOL;
 }
 ;
 
@@ -664,7 +667,7 @@ parameter_declaration {
 | parameter_list ',' parameter_declaration {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $3;
 }
 ;
@@ -686,7 +689,7 @@ IDENTIFIER {
 | identifier_list ',' IDENTIFIER {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $3;
 }
 ;
@@ -695,7 +698,7 @@ IDENTIFIER {
 initializer:
 assignment_expression {
     $$ = create_initializer_tree(0);
-    $$->assign_exp = $1;
+    $$->info.assign_exp = $1;
 }
 | '{' initializer_list '}' {
     //列表初始化 {1,1,1}
@@ -717,12 +720,12 @@ initializer {
 | designation initializer {
     $$ = create_initial_list_tree(1);
     $$->initer = $2;
-    $$->designator = $1;
+    $$->design_list = $1;
 }
 | initializer_list ',' initializer {// 在分析时需要判断next == NULL来确定是否到这个list的结尾
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = create_initial_list_tree(0);
     $1->next->initer = $3;
     
@@ -730,7 +733,7 @@ initializer {
 | initializer_list ',' designation initializer {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = create_initial_list_tree(1);
     $1->next->initer = $4;
     $1->next->design_list = $3;
@@ -750,7 +753,7 @@ designator {
 | designator_list designator {
     $$ = $1;
     while($1->next != NULL)
-        $1=$1->next;
+    $1=$1->next;
     $1->next = $2;
 }
 ;
@@ -769,22 +772,22 @@ designator:
 //声明
 statement:
 labeled_statement {
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 | compound_statement {
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 | expression_statement{
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 | selection_statement {
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 | iteration_statement {
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 | jump_statement {
-    $$ = create_tree("statement",1,$1);
+    $$ = $1;
 }
 ;
 
@@ -809,12 +812,12 @@ compound_statement:
 '{' '}' {
     $$ = create_stat_tree(1);
     $$->stat_info.compound_info.type2 = SINGLE;
-    $$->stat_info.compund_info.blist = NULL;
+    $$->stat_info.compound_info.blist = NULL;
 }
 | '{' block_item_list '}' {
     $$ = create_stat_tree(1);
     $$->stat_info.compound_info.type2 = GROUP;
-    $$->stat_info.compund_info.blist = $2;
+    $$->stat_info.compound_info.blist = $2;
 }
 ;
 
@@ -826,7 +829,7 @@ block_item {
 | block_item_list block_item {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $2;
 }
 ;
@@ -857,21 +860,21 @@ expression_statement:
 selection_statement:
 IF '(' expression ')' statement %prec LOWER_THAN_ELSE {
     $$ = create_stat_tree(3);
-    $$->stat_info.select_info.type2 = IF;
+    $$->stat_info.select_info.type2 = t_IF;
     $$->stat_info.select_info.exp = $3;
     $$->stat_info.select_info.stat1 = $5;
     $$->stat_info.select_info.stat2 = NULL;
 }
 | IF '(' expression ')' statement ELSE statement {
     $$ = create_stat_tree(3);
-    $$->stat_info.select_info.type2 = IF_ELSE;
+    $$->stat_info.select_info.type2 = t_IF_ELSE;
     $$->stat_info.select_info.exp = $3;
     $$->stat_info.select_info.stat1 = $5;
     $$->stat_info.select_info.stat2 = $7;
 }
 | SWITCH '(' expression ')' statement {
     $$ = create_stat_tree(3);
-    $$->stat_info.select_info.type2 = SWITCH;
+    $$->stat_info.select_info.type2 = t_SWITCH;
     $$->stat_info.select_info.exp = $3;
     $$->stat_info.select_info.stat1 = $5;
     $$->stat_info.select_info.stat2 = NULL;
@@ -882,7 +885,7 @@ IF '(' expression ')' statement %prec LOWER_THAN_ELSE {
 iteration_statement:
 WHILE '(' expression ')' statement {
     $$ = create_stat_tree(4);
-    $$->stat_info.iter_info.type2 = WHILE;
+    $$->stat_info.iter_info.type2 = t_WHILE;
     $$->stat_info.iter_info.exp = $3;
     $$->stat_info.iter_info.stat1 = $5;
     $$->stat_info.iter_info.stat2 = NULL;
@@ -891,7 +894,7 @@ WHILE '(' expression ')' statement {
 }
 | DO statement WHILE '(' expression ')' ';' {
     $$ = create_stat_tree(4);
-    $$->stat_info.iter_info.type2 = DO_WHILE;
+    $$->stat_info.iter_info.type2 = t_DO_WHILE;
     $$->stat_info.iter_info.exp = $5;
     $$->stat_info.iter_info.stat1 = $2;
     $$->stat_info.iter_info.stat2 = NULL;
@@ -940,19 +943,19 @@ WHILE '(' expression ')' statement {
 jump_statement:
 GOTO IDENTIFIER ';' {
     $$ = create_stat_tree(5);
-    $$->stat_info.jump_info.type2 = GOTO;
+    $$->stat_info.jump_info.type2 = t_GOTO;
     $$->stat_info.jump_info.ID = $2;
     $$->stat_info.jump_info.exp = NULL;
 }
 | CONTINUE ';' {
     $$ = create_stat_tree(5);
-    $$->stat_info.jump_info.type2 = CONTINUE;
+    $$->stat_info.jump_info.type2 = t_CONTINUE;
     $$->stat_info.jump_info.ID = NULL;
     $$->stat_info.jump_info.exp = NULL;
 }
 | BREAK ';' {
     $$ = create_stat_tree(5);
-    $$->stat_info.jump_info.type2 = BREAK;
+    $$->stat_info.jump_info.type2 = t_BREAK;
     $$->stat_info.jump_info.ID = NULL;
     $$->stat_info.jump_info.exp = NULL;
 }
@@ -977,7 +980,7 @@ external_declaration {
 | translation_unit external_declaration {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $2;
 }
 ;
@@ -992,7 +995,7 @@ function_definition {
 }
 | declaration {
     $$ = create_root_tree();
-    $$->type = Decl;
+    $$->type = Decl_T;
     $$->son.decl_tree = $1;
     //变量声明
     //printf("declaration");
@@ -1002,21 +1005,21 @@ function_definition {
 function_definition:
 type_specifier declarator declaration_list compound_statement {
     $$ = create_func_tree($1);
-    temp->func_name = $2;
-    temp->decl_list = $3;
-    temp->stat_list = $4;
-    temp->beg_line = $2->line;
+    $$->func_name = $2;
+    $$->decl_list = $3;
+    $$->stat_list = $4;
+    $$->beg_line = $2->line;
     //结束的行数得找一下
-    temp->beg_line = $4->line;
+    $$->beg_line = $4->line;
 }
 | type_specifier declarator compound_statement {
     $$ = create_func_tree($1);
-    temp->func_name = $2;
-    temp->decl_list = NULL;
-    temp->stat_list = $3;
-    temp->beg_line = $2->line;
+    $$->func_name = $2;
+    $$->decl_list = NULL;
+    $$->stat_list = $3;
+    $$->beg_line = $2->line;
     //结束的行数得找一下
-    temp->beg_line = $3->line;
+    $$->beg_line = $3->line;
 }
 ;
 
@@ -1027,7 +1030,7 @@ declaration {
 | declaration_list declaration {
     $$ = $1;
     while($1->next != NULL)
-        $1 = $1->next;
+    $1 = $1->next;
     $1->next = $2;
 }
 ;
