@@ -29,6 +29,15 @@ public:
     void addCode(string code);
     void printCode();
     string createCode(string );
+    string createCodeforParam(VarNode);
+    string createCodeforRet(VarNode);
+    string createCodeforAssign(VarNode, VarNode);
+    string createCodeforVar(string, string, VarNode, VarNode);
+    string createCodeforArugument(VarNode);
+    
+    string getLabelname();
+    string getNodename(VarNode node);
+    string getArrNodename(ArrayNode);
 };
 
 #endif /* InnerCodeGenerator_hpp */

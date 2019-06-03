@@ -7,6 +7,7 @@
 //
 
 #include "InnerCodeGenerator.hpp"
+#include "tools.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -28,5 +29,104 @@ void ICG::printCode(){
         fout<< *iter <<"\n";
     }
 }
+
+string ICG::createCodeforVar(string tempname, string op, VarNode node1, VarNode node2){
+    string result = tempname + " := ";
+    if(node1.useAddress)
+        result += "*" +node1.name;
+    else{
+        if (node1.num < 0)
+            result += node1.num;
+        else
+            result += "var" + inttostr(node1.num);
+    }
+    
+    result += " " + op + " ";
+    
+    if(node2.useAddress){
+        result += "*" +node2.name;
+    }
+    else{
+        if(node2.num < 0)
+            result += node2.name;
+        else
+            result += "var" + inttostr(node2.num);
+    }
+    
+    return result;
+}
+
+string ICG::createCodeforAssign(VarNode node1, VarNode node2){
+    string result;
+    if(node1.useAddress)
+        result = "*" + node1.name + " := ";
+    else{
+        result = "var" + inttostr(node1.num);
+        result += " := ";
+    }
+    
+    if(node2.useAddress)
+        result += "*" +node2.name;
+    else{
+        if(node2.num < 0)
+            result += node2.name;
+        else
+            result += "var" + inttostr(node2.num);
+    }
+    return result;
+}
+
+string ICG::createCodeforParam(VarNode node){
+    string result = "PARAM ";
+    result += "var" + inttostr(node.num);
+    return result;
+    
+}
+
+string ICG::createCodeforRet(VarNode node){
+    string result = "RETURN ";
+    if(node.useAddress)
+        result += "*" + node.name;
+    else{
+        if(node.num < 0)
+            result += node.name;
+        else
+            result += "var" + inttostr(node.num);
+    }
+    return result;
+}
+
+string ICG::createCodeforArugument(VarNode node){
+    string result = "ARG ";
+    if(node.useAddress)
+    result += "*" + node.name;
+    else{
+        if(node.num < 0)
+            result += node.name;
+        else
+            result += "var" + inttostr(node.num);
+    }
+    return result;
+}
+
+string ICG::getNodename(VarNode node){
+    if(node.useAddress)
+        return "*" + node.name;
+    else{
+        if(node.num < 0)
+            return node.name;
+        else
+            return ("var" + inttostr(node.num));
+    }
+}
+
+string ICG::getArrNodename(ArrayNode node){
+    return ("array" + inttostr(node.num));
+}
+
+string ICG::getLabelname(){
+    return ("label" + inttostr(labelNum++));
+}
+
 
 

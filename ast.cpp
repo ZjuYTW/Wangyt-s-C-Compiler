@@ -9,6 +9,8 @@ using namespace std;
 
 extern char *yytext;
 
+
+
 ID_Node* create_ID(int linenum){
     ID_Node* temp = (ID_Node*)malloc(sizeof(ID_Node));
     temp->name = yytext;
@@ -29,9 +31,11 @@ exp_Node* create_exp_tree(int linenum,int type){//创建exp_Node中prim类型的
         case 1://TRUE
             temp->info.prim_info.type2 = t_TRUE;
             temp->info.prim_info.detail.val = NULL;
+            break;
         case 2://FASLE
             temp->info.prim_info.type2 = t_FALSE;
             temp->info.prim_info.detail.val = NULL;
+            break;
         case 3://CONSTANT_INT
             temp->info.prim_info.type2 = CONSTAN_INT;
             int value;
@@ -47,6 +51,7 @@ exp_Node* create_exp_tree(int linenum,int type){//创建exp_Node中prim类型的
         case 4://CONSTANT_DOUBLE
             temp->info.prim_info.type2 = t_CONSTANT_DOUBLE;
             temp->info.prim_info.detail.val = yytext;
+            break;
         case 5://prim_NA
             temp->info.prim_info.type2 = prim_NA;
             temp->info.prim_info.detail.val = NULL;
@@ -119,6 +124,12 @@ exp_Node* create_exp_tree(int type){
             temp->type = ARUG;
             break;
         case 15:
+            temp->type = CONST_EXP;
+            break;
+        case 16:
+            temp->type = CON;
+            break;
+        case 17:
             temp->type = exp_NA;
             break;
         default:
@@ -287,5 +298,6 @@ func_Node *create_func_tree(type_specifier_kind type){
     temp->end_line = 0;
     return temp;
 }
+
 
 

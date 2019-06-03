@@ -1,10 +1,9 @@
 %{
-    #include <cstdlib>
-    #include <cstdio>
-    #include <string>
+    #include <stdlib.h>
+    #include <stdio.h>
     #include "ast.hpp"
     #include "block.hpp"
-    /*#include "parser.hpp"*/
+    #include "parser.hpp"
     using namespace std;
     
     extern char *yytext;
@@ -52,7 +51,7 @@
 %token <expN> CONSTANT STRING_LITERAL SIZEOF CONSTANT_INT CONSTANT_DOUBLE TRUE FALSE
 %type <expN> primary_expression postfix_expression argument_expression_list unary_expression
 %type <expN> multiplicative_expression additive_expression shift_expression relational_expression equality_expression
-%type <expN> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
+%type <expN> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression conditional_expression constant_expression
 %type <expN> assignment_expression expression
 %token <typekind>  CHAR INT DOUBLE VOID BOOL
 %type  <typekind>  type_specifier
@@ -455,9 +454,26 @@ logical_and_expression {
 }
 ;
 
+conditional_expression
+:logical_or_expression {
+    $$ = create_exp_tree(16);
+    $$->info.cond_info.logical_or_exp = $1;
+    $$->info.cond_info.exp = NULL;
+    $$->info.cond_info.cond_exp = NULL;
+    $$->line = $1->line;
+}
+|logical_or_expression '?' expression ':' conditional_expression{
+    $$ = create_exp_tree(16);
+    $$->info.cond_info.logical_or_exp = $1;
+    $$->info.cond_info.exp = $5;
+    $$->info.cond_info.cond_exp = $3;
+    $$->line = $1->line;
+}
+;
+
 /*赋值表达式*/
 assignment_expression:
-logical_or_expression {
+conditional_expression {//logical_or_expression
     //条件表达式
     $$ = create_exp_tree(2);
     $$->info.assign_info.type2 = assign_NA;
@@ -525,20 +541,27 @@ assignment_operator:
 expression:
 assignment_expression {
     //赋值表达式
-    $$ = create_exp_tree(15);
+    $$ = create_exp_tree(17);
     $$->info.exp_root.next_exp = NULL;
     $$->info.exp_root.assign_exp = $1;
     $$->line = $1->line;
 }
 | expression ',' assignment_expression {
     //逗号表达式
-    $$ = create_exp_tree(15);
+    $$ = create_exp_tree(17);
     $$->info.exp_root.next_exp = $1;
     $$->info.exp_root.assign_exp = $3;
     $$->line = $3->line;
 }
 ;
 
+constant_expression:
+conditional_expression{
+    $$ = create_exp_tree(15);
+    $$->info.const_info.cond_exp = $1;
+    $$->line = $1->line;
+}
+;
 
 declaration:
 type_specifier ';' {
@@ -607,20 +630,12 @@ IDENTIFIER {
     //.....
     $$ = $2;
 }
-| declarator '[' assignment_expression ']' {
+| declarator '[' constant_expression ']' {
     //数组
     //printf("assignment_expression");
     $$ = create_declarator_tree(1);
-    $$->info.decl_info.detail.arr_info.arr_type = ASSIGN_EXP;
-    $$->info.decl_info.detail.arr_info.assig_exp = $3;
-    $$->info.decl_info.detail.arr_info.decl_tree = $1;
-    $$->line = $1->line;
-}
-| declarator '[' '*' ']' {
-    //....
-    $$ = create_declarator_tree(1);
-    $$->info.decl_info.detail.arr_info.arr_type = STAR;
-    $$->info.decl_info.detail.arr_info.assig_exp = NULL;
+    $$->info.decl_info.detail.arr_info.arr_type = arr_C_exp;
+    $$->info.decl_info.detail.arr_info.exp = $3;
     $$->info.decl_info.detail.arr_info.decl_tree = $1;
     $$->line = $1->line;
 }
@@ -628,7 +643,7 @@ IDENTIFIER {
     //数组
     $$ = create_declarator_tree(1);
     $$->info.decl_info.detail.arr_info.arr_type = arr_NA;
-    $$->info.decl_info.detail.arr_info.assig_exp = NULL;
+    $$->info.decl_info.detail.arr_info.exp = NULL;
     $$->info.decl_info.detail.arr_info.decl_tree = $1;
     $$->line = $1->line;
 }
@@ -1004,22 +1019,22 @@ function_definition {
 
 function_definition:
 type_specifier declarator declaration_list compound_statement {
+    //这个形式的函数定义好像没有见过，基本用不上
     $$ = create_func_tree($1);
     $$->func_name = $2;
     $$->decl_list = $3;
     $$->stat_list = $4;
     $$->beg_line = $2->line;
     //结束的行数得找一下
-    $$->beg_line = $4->line;
 }
 | type_specifier declarator compound_statement {
+    //这个文法对应的函数形式 int func_name(int , int b) {}
     $$ = create_func_tree($1);
     $$->func_name = $2;
     $$->decl_list = NULL;
     $$->stat_list = $3;
     $$->beg_line = $2->line;
     //结束的行数得找一下
-    $$->beg_line = $3->line;
 }
 ;
 

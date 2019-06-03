@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string>
 #include "y.tab.hpp"
-#include "enums_type.h"
+#include "enums_type.hpp"
 
 using namespace std;
 /*一共有五种tree_Node
@@ -31,8 +31,8 @@ struct root_Node{//整个大类上分为声明以及函数节点
 struct func_Node{
     type_specifier_kind type;//{VOID,CHAR,INT,DOUBLE,BOOL}
     
-    struct declarator_Node *func_name;
-    struct declaration_Node *decl_list;//参数列表
+    struct declarator_Node *func_name;//所有的参数记在这里
+    struct declaration_Node *decl_list;//这个节点的作用不知道，文法中要求我就加了一个
     struct stat_Node* stat_list;//语句
     
     int beg_line;
@@ -50,7 +50,7 @@ struct declaration_Node{//declaration_Node
     type_specifier_kind type;//{VOID,CHAR,INT,DOUBLE,BOOL}
     struct declarator_Node* decl_list;
     
-    //每一个句子之间的连接
+    //declaration_list中会用到next，基本不会考虑这个。。。
     struct declaration_Node* next;
     int line;
 };
@@ -67,8 +67,8 @@ struct declarator_Node{
                     struct ID_Node* ID_list;
                 }ID_info;
                 struct{
-                    decl_arr_kind arr_type;//{ASSIG_EXP,STAR,arr_NA}
-                    struct exp_Node* assig_exp;
+                    decl_arr_kind arr_type;//{arr_C_exp,arr_NA}
+                    struct exp_Node* exp;
                     struct declarator_Node* decl_tree;
                 }arr_info;
                 struct{
@@ -182,7 +182,7 @@ struct exp_Node{
         }exp_root;
         struct{
             prim_kind type2;//{ID,TRUE,FALSE,CONSTAN_INT,CONSTANT_DOUBLE,prim_NA}
-            union{
+            struct{
                 char* val;//除了ID以外的信息存在val中
                 ID_Node* ID;
                 struct exp_Node *exp;
@@ -194,7 +194,7 @@ struct exp_Node{
             struct exp_Node* arg_list;//也可以用作连接一个prim_exp的指针
         }post_info;
         struct{
-            struct exp_Node* unary_exp;//如果是logical_or_exp的规约（也就是type2为assign_NA），就去unary_exp中找
+            struct exp_Node* unary_exp;//如果是conditional_expression的规约（也就是type2为assign_NA），就去unary_exp中找
             struct exp_Node* assign_exp;
             assign_kind type2;//{ASSIGNMENT,MUL_ASSIGN,DIV_ASSIGN,MOD_ASSIGN,ADD_ASSIGN,SUB_ASSIGN,LEFT_ASSIGN,RIGHT_ASSIGN,AND_ASSIGN,XOR_ASSIGN,OR_ASSIGN,assign_NA}
         }assign_info;
@@ -253,6 +253,14 @@ struct exp_Node{
             struct exp_Node* argu_exp;
             struct exp_Node* assig_exp;
         }argument_info;
+        struct{
+            struct exp_Node *cond_exp;
+        }const_info;
+        struct{
+            struct exp_Node *logical_or_exp;
+            struct exp_Node *exp;
+            struct exp_Node *cond_exp;
+        }cond_info;
     }info;
     int line;
 };

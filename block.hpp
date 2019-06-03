@@ -2,34 +2,37 @@
 #define block_hpp
 #include <vector>
 #include <map>
+#include "ast.hpp"
 
-struct varNode{//这些个节点是把抽象语法树的那些节点做进一步的结合
+struct VarNode{//这些个节点是把抽象语法树的那些节点做进一步的结合
     string name;
-    string type;
+    type_specifier_kind type;
     int num = -1;
     bool useAddress = false;
-    
-}；
-
-struct funcNode{
-    bool isdefinied = false;
-    string name;
-    string rettype;
-    vector<varNode> paralist;
+    int line;
+    string boolstr;
 };
 
-struct arrayNode{
+struct FuncNode{
+    bool isdefinied = false;
     string name;
-    string type;
+    type_specifier_kind rettype;
+    vector<VarNode> paralist;
+};
+
+struct ArrayNode{
+    string name;
+    type_specifier_kind type;
     int num = -1;
+    int line;
 };
 
 class block{
 public:
-    funcNode func;
+    FuncNode func;
     bool isfunc = false;
-    map<string, varNode> varMap;
-    map<string, arrayNode> arrayMap;
+    map<string, VarNode> varMap;
+    map<string, ArrayNode> arrayMap;
     string breakLabelname;
     bool canBreak = false;
 };

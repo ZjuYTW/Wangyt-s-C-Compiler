@@ -141,7 +141,7 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-#include "enums_type.h"
+#include "enums_type.hpp"
 typedef union YYSTYPE
 #line 21 "compiler.y"
 {
