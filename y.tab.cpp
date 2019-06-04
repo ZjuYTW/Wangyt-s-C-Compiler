@@ -169,13 +169,12 @@
 
 /* Copy the first part of user declarations.  */
 #line 1 "compiler.y"
-    #include <cstdlib>
-    #include <cstdio>
-    #include <string>
+
+    #include <stdlib.h>
+    #include <stdio.h>
     #include "ast.hpp"
     #include "block.hpp"
     #include "parser.hpp"
-#include "enums_type.hpp"
     using namespace std;
     
     extern char *yytext;
@@ -209,7 +208,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 21 "compiler.y"
+#line 20 "compiler.y"
 {
     struct root_Node* rootN;
     struct func_Node* funcN;
@@ -228,7 +227,7 @@ typedef union YYSTYPE
     enum unary_kind arykind;
 }
 /* Line 193 of yacc.c.  */
-#line 232 "y.tab.c"
+#line 231 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -241,7 +240,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 245 "y.tab.c"
+#line 244 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -587,21 +586,21 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    71,    71,    78,    83,    87,    90,    94,    98,   106,
-     113,   121,   130,   138,   146,   157,   164,   175,   183,   191,
-     199,   210,   213,   216,   219,   226,   233,   240,   247,   258,
-     265,   272,   283,   291,   299,   311,   318,   325,   332,   340,
-     352,   359,   367,   378,   384,   394,   400,   410,   416,   426,
-     432,   443,   449,   459,   466,   477,   485,   496,   499,   503,
-     507,   511,   515,   519,   523,   527,   531,   535,   543,   550,
-     560,   568,   571,   580,   583,   592,   595,   604,   607,   610,
-     613,   616,   624,   630,   634,   643,   651,   659,   667,   680,
-     683,   692,   696,   702,   705,   715,   719,   724,   732,   736,
-     741,   749,   760,   766,   769,   778,   782,   790,   793,   796,
-     799,   802,   805,   812,   818,   828,   833,   841,   845,   854,
-     858,   865,   869,   877,   884,   891,   902,   911,   920,   929,
-     938,   947,   960,   966,   972,   978,   984,   993,   996,  1005,
-    1012,  1022,  1032,  1045,  1048
+       0,    70,    70,    77,    82,    86,    89,    93,    97,   105,
+     112,   120,   129,   137,   145,   156,   163,   174,   182,   190,
+     198,   209,   212,   215,   218,   225,   232,   239,   246,   257,
+     264,   271,   282,   290,   298,   310,   317,   324,   331,   339,
+     351,   358,   366,   377,   383,   393,   399,   409,   415,   425,
+     431,   442,   448,   458,   465,   476,   484,   495,   498,   502,
+     506,   510,   514,   518,   522,   526,   530,   534,   542,   549,
+     559,   567,   570,   579,   582,   591,   594,   603,   606,   609,
+     612,   615,   623,   629,   633,   642,   650,   658,   666,   679,
+     682,   691,   695,   701,   704,   714,   718,   723,   731,   735,
+     740,   748,   759,   765,   768,   777,   781,   789,   792,   795,
+     798,   801,   804,   811,   817,   827,   832,   840,   844,   853,
+     857,   864,   868,   876,   883,   890,   901,   910,   919,   928,
+     937,   946,   959,   965,   971,   977,   983,   992,   995,  1004,
+    1011,  1021,  1030,  1042,  1045
 };
 #endif
 
@@ -1762,14 +1761,14 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 71 "compiler.y"
+#line 70 "compiler.y"
     {//创建一个根节点
     root = (yyvsp[(1) - (1)].rootN);
 }
     break;
 
   case 3:
-#line 78 "compiler.y"
+#line 77 "compiler.y"
     {
     (yyval.expN) = create_exp_tree((yyvsp[(1) - (1)].IDN)->line,0);//$1是ID_Node
     (yyval.expN)->info.prim_info.detail.ID = (yyvsp[(1) - (1)].IDN);
@@ -1777,21 +1776,21 @@ yyreduce:
     break;
 
   case 4:
-#line 83 "compiler.y"
+#line 82 "compiler.y"
     {
     (yyval.expN) = (yyvsp[(1) - (1)].expN);
 }
     break;
 
   case 5:
-#line 87 "compiler.y"
+#line 86 "compiler.y"
     {
     (yyval.expN) = (yyvsp[(1) - (1)].expN);
 }
     break;
 
   case 6:
-#line 90 "compiler.y"
+#line 89 "compiler.y"
     {
     (yyval.expN) = (yyvsp[(1) - (1)].expN);
     
@@ -1799,14 +1798,14 @@ yyreduce:
     break;
 
   case 7:
-#line 94 "compiler.y"
+#line 93 "compiler.y"
     {
     (yyval.expN) = (yyvsp[(1) - (1)].expN);
 }
     break;
 
   case 8:
-#line 98 "compiler.y"
+#line 97 "compiler.y"
     {
     (yyval.expN) = create_exp_tree((yyvsp[(2) - (3)].expN)->line,5);
     (yyval.expN) ->info.prim_info.detail.exp = (yyvsp[(2) - (3)].expN);
@@ -1814,7 +1813,7 @@ yyreduce:
     break;
 
   case 9:
-#line 106 "compiler.y"
+#line 105 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(1);
     (yyval.expN)->info.post_info.type2 = post_NA;
@@ -1825,7 +1824,7 @@ yyreduce:
     break;
 
   case 10:
-#line 113 "compiler.y"
+#line 112 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(1);
     (yyval.expN)->info.post_info.post_exp = (yyvsp[(1) - (4)].expN);
@@ -1837,7 +1836,7 @@ yyreduce:
     break;
 
   case 11:
-#line 122 "compiler.y"
+#line 121 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(1);
     (yyval.expN)->info.post_info.type2 = FUNC_CALL;
@@ -1849,7 +1848,7 @@ yyreduce:
     break;
 
   case 12:
-#line 130 "compiler.y"
+#line 129 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(1);
     (yyval.expN)->info.post_info.type2 = FUNC_CALL;
@@ -1861,7 +1860,7 @@ yyreduce:
     break;
 
   case 13:
-#line 138 "compiler.y"
+#line 137 "compiler.y"
     {
     //++
     (yyval.expN) = create_exp_tree(1);
@@ -1873,7 +1872,7 @@ yyreduce:
     break;
 
   case 14:
-#line 146 "compiler.y"
+#line 145 "compiler.y"
     {
     //--
     (yyval.expN) = create_exp_tree(1);
@@ -1885,18 +1884,18 @@ yyreduce:
     break;
 
   case 15:
-#line 157 "compiler.y"
+#line 156 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(14);
     (yyval.expN)->info.argument_info.type2 = SINGLE;
-    (yyval.expN)->info.argument_info.argu_exp = (yyvsp[(1) - (1)].expN);
-    (yyval.expN)->info.argument_info.assig_exp = NULL;
+    (yyval.expN)->info.argument_info.argu_exp = NULL;
+    (yyval.expN)->info.argument_info.assig_exp = (yyvsp[(1) - (1)].expN);
     (yyval.expN)->line = (yyvsp[(1) - (1)].expN)->line;
 }
     break;
 
   case 16:
-#line 164 "compiler.y"
+#line 163 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(14);
     (yyval.expN)->info.argument_info.type2 = GROUP;
@@ -1907,7 +1906,7 @@ yyreduce:
     break;
 
   case 17:
-#line 175 "compiler.y"
+#line 174 "compiler.y"
     {
     //printf("postfix");
     (yyval.expN) = create_exp_tree(13);
@@ -1919,7 +1918,7 @@ yyreduce:
     break;
 
   case 18:
-#line 183 "compiler.y"
+#line 182 "compiler.y"
     {
     //++
     (yyval.expN) = create_exp_tree(13);
@@ -1931,7 +1930,7 @@ yyreduce:
     break;
 
   case 19:
-#line 191 "compiler.y"
+#line 190 "compiler.y"
     {
     //--
     (yyval.expN) = create_exp_tree(13);
@@ -1943,7 +1942,7 @@ yyreduce:
     break;
 
   case 20:
-#line 199 "compiler.y"
+#line 198 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(13);
     (yyval.expN)->info.unary_info.type2 = (yyvsp[(1) - (2)].arykind);
@@ -1954,35 +1953,35 @@ yyreduce:
     break;
 
   case 21:
-#line 210 "compiler.y"
+#line 209 "compiler.y"
     {
     (yyval.arykind) = POS;
 }
     break;
 
   case 22:
-#line 213 "compiler.y"
+#line 212 "compiler.y"
     {
     (yyval.arykind) = NEG;
 }
     break;
 
   case 23:
-#line 216 "compiler.y"
+#line 215 "compiler.y"
     {
     (yyval.arykind) = BIT_NEG;
 }
     break;
 
   case 24:
-#line 219 "compiler.y"
+#line 218 "compiler.y"
     {
     (yyval.arykind) = FEI;
 }
     break;
 
   case 25:
-#line 226 "compiler.y"
+#line 225 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(12);
     (yyval.expN)->info.mul_info.type2 = mul_NA;
@@ -1993,7 +1992,7 @@ yyreduce:
     break;
 
   case 26:
-#line 233 "compiler.y"
+#line 232 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(12);
     (yyval.expN)->info.mul_info.type2 = MUL_OP;
@@ -2004,7 +2003,7 @@ yyreduce:
     break;
 
   case 27:
-#line 240 "compiler.y"
+#line 239 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(12);
     (yyval.expN)->info.mul_info.type2 = DIV_OP;
@@ -2015,7 +2014,7 @@ yyreduce:
     break;
 
   case 28:
-#line 247 "compiler.y"
+#line 246 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(12);
     (yyval.expN)->info.mul_info.type2 = MOD;
@@ -2026,7 +2025,7 @@ yyreduce:
     break;
 
   case 29:
-#line 258 "compiler.y"
+#line 257 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(11);
     (yyval.expN)->info.add_info.type2 = add_NA;
@@ -2037,7 +2036,7 @@ yyreduce:
     break;
 
   case 30:
-#line 265 "compiler.y"
+#line 264 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(11);
     (yyval.expN)->info.add_info.type2 = ADD_OP;
@@ -2048,7 +2047,7 @@ yyreduce:
     break;
 
   case 31:
-#line 272 "compiler.y"
+#line 271 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(11);
     (yyval.expN)->info.add_info.type2 = MINUS_OP;
@@ -2059,7 +2058,7 @@ yyreduce:
     break;
 
   case 32:
-#line 283 "compiler.y"
+#line 282 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(10);
     (yyval.expN)->info.shift_info.type2 = shift_NA;
@@ -2071,7 +2070,7 @@ yyreduce:
     break;
 
   case 33:
-#line 291 "compiler.y"
+#line 290 "compiler.y"
     {
     //<<
     (yyval.expN) = create_exp_tree(10);
@@ -2083,7 +2082,7 @@ yyreduce:
     break;
 
   case 34:
-#line 299 "compiler.y"
+#line 298 "compiler.y"
     {
     //>>
     (yyval.expN) = create_exp_tree(10);
@@ -2095,7 +2094,7 @@ yyreduce:
     break;
 
   case 35:
-#line 311 "compiler.y"
+#line 310 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(9);
     (yyval.expN)->info.rela_info.type2 = relation_NA;
@@ -2106,7 +2105,7 @@ yyreduce:
     break;
 
   case 36:
-#line 318 "compiler.y"
+#line 317 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(9);
     (yyval.expN)->info.rela_info.type2 = LES;
@@ -2117,7 +2116,7 @@ yyreduce:
     break;
 
   case 37:
-#line 325 "compiler.y"
+#line 324 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(9);
     (yyval.expN)->info.rela_info.type2 = GT;
@@ -2128,7 +2127,7 @@ yyreduce:
     break;
 
   case 38:
-#line 332 "compiler.y"
+#line 331 "compiler.y"
     {
     // <=
     (yyval.expN) = create_exp_tree(9);
@@ -2140,7 +2139,7 @@ yyreduce:
     break;
 
   case 39:
-#line 340 "compiler.y"
+#line 339 "compiler.y"
     {
     // >=
     (yyval.expN) = create_exp_tree(9);
@@ -2152,7 +2151,7 @@ yyreduce:
     break;
 
   case 40:
-#line 352 "compiler.y"
+#line 351 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(8);
     (yyval.expN)->info.equal_info.type2 = equal_NA;
@@ -2163,7 +2162,7 @@ yyreduce:
     break;
 
   case 41:
-#line 359 "compiler.y"
+#line 358 "compiler.y"
     {
     // ==
     (yyval.expN) = create_exp_tree(8);
@@ -2175,7 +2174,7 @@ yyreduce:
     break;
 
   case 42:
-#line 367 "compiler.y"
+#line 366 "compiler.y"
     {
     // !=
     (yyval.expN) = create_exp_tree(8);
@@ -2187,7 +2186,7 @@ yyreduce:
     break;
 
   case 43:
-#line 378 "compiler.y"
+#line 377 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(7);
     (yyval.expN)->info.and_info.and_exp = NULL;
@@ -2197,7 +2196,7 @@ yyreduce:
     break;
 
   case 44:
-#line 384 "compiler.y"
+#line 383 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(7);
     (yyval.expN)->info.and_info.and_exp = (yyvsp[(1) - (3)].expN);
@@ -2207,7 +2206,7 @@ yyreduce:
     break;
 
   case 45:
-#line 394 "compiler.y"
+#line 393 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(6);
     (yyval.expN)->info.excl_or_info.exclusive_or_exp = NULL;
@@ -2217,7 +2216,7 @@ yyreduce:
     break;
 
   case 46:
-#line 400 "compiler.y"
+#line 399 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(6);
     (yyval.expN)->info.excl_or_info.exclusive_or_exp = (yyvsp[(1) - (3)].expN);
@@ -2227,7 +2226,7 @@ yyreduce:
     break;
 
   case 47:
-#line 410 "compiler.y"
+#line 409 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(5);
     (yyval.expN)->info.incl_or_info.inclusive_or_exp = NULL;
@@ -2237,7 +2236,7 @@ yyreduce:
     break;
 
   case 48:
-#line 416 "compiler.y"
+#line 415 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(5);
     (yyval.expN)->info.incl_or_info.inclusive_or_exp = (yyvsp[(1) - (3)].expN);
@@ -2247,7 +2246,7 @@ yyreduce:
     break;
 
   case 49:
-#line 426 "compiler.y"
+#line 425 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(4);
     (yyval.expN)->info.logi_and_info.logical_and_exp = NULL;
@@ -2257,7 +2256,7 @@ yyreduce:
     break;
 
   case 50:
-#line 432 "compiler.y"
+#line 431 "compiler.y"
     {
     //&&
     (yyval.expN) = create_exp_tree(4);
@@ -2268,7 +2267,7 @@ yyreduce:
     break;
 
   case 51:
-#line 443 "compiler.y"
+#line 442 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(3);
     (yyval.expN)->info.logi_or_info.logical_or_exp = NULL;
@@ -2278,7 +2277,7 @@ yyreduce:
     break;
 
   case 52:
-#line 449 "compiler.y"
+#line 448 "compiler.y"
     {
     //||
     (yyval.expN) = create_exp_tree(3);
@@ -2289,7 +2288,7 @@ yyreduce:
     break;
 
   case 53:
-#line 459 "compiler.y"
+#line 458 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(16);
     (yyval.expN)->info.cond_info.logical_or_exp = (yyvsp[(1) - (1)].expN);
@@ -2300,7 +2299,7 @@ yyreduce:
     break;
 
   case 54:
-#line 466 "compiler.y"
+#line 465 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(16);
     (yyval.expN)->info.cond_info.logical_or_exp = (yyvsp[(1) - (5)].expN);
@@ -2311,7 +2310,7 @@ yyreduce:
     break;
 
   case 55:
-#line 477 "compiler.y"
+#line 476 "compiler.y"
     {//logical_or_expression
     //条件表达式
     (yyval.expN) = create_exp_tree(2);
@@ -2323,7 +2322,7 @@ yyreduce:
     break;
 
   case 56:
-#line 485 "compiler.y"
+#line 484 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(2);
     (yyval.expN)->info.assign_info.type2 = (yyvsp[(2) - (3)].assignkind);
@@ -2334,14 +2333,14 @@ yyreduce:
     break;
 
   case 57:
-#line 496 "compiler.y"
+#line 495 "compiler.y"
     {
     (yyval.assignkind) = t_ASSIGNMENT;
 }
     break;
 
   case 58:
-#line 499 "compiler.y"
+#line 498 "compiler.y"
     {
     //*=
     (yyval.assignkind) = t_MUL_ASSIGN;
@@ -2349,7 +2348,7 @@ yyreduce:
     break;
 
   case 59:
-#line 503 "compiler.y"
+#line 502 "compiler.y"
     {
     // /=
     (yyval.assignkind) = t_DIV_ASSIGN;
@@ -2357,7 +2356,7 @@ yyreduce:
     break;
 
   case 60:
-#line 507 "compiler.y"
+#line 506 "compiler.y"
     {
     // %=
     (yyval.assignkind) = t_MOD_ASSIGN;
@@ -2365,7 +2364,7 @@ yyreduce:
     break;
 
   case 61:
-#line 511 "compiler.y"
+#line 510 "compiler.y"
     {
     // +=
     (yyval.assignkind) = t_ADD_ASSIGN;
@@ -2373,7 +2372,7 @@ yyreduce:
     break;
 
   case 62:
-#line 515 "compiler.y"
+#line 514 "compiler.y"
     {
     // -=
     (yyval.assignkind) = t_SUB_ASSIGN;
@@ -2381,7 +2380,7 @@ yyreduce:
     break;
 
   case 63:
-#line 519 "compiler.y"
+#line 518 "compiler.y"
     {
     // <<=
     (yyval.assignkind) = t_LEFT_ASSIGN;
@@ -2389,7 +2388,7 @@ yyreduce:
     break;
 
   case 64:
-#line 523 "compiler.y"
+#line 522 "compiler.y"
     {
     // >>=
     (yyval.assignkind) = t_RIGHT_ASSIGN;
@@ -2397,7 +2396,7 @@ yyreduce:
     break;
 
   case 65:
-#line 527 "compiler.y"
+#line 526 "compiler.y"
     {
     // &=
     (yyval.assignkind) = t_AND_ASSIGN;
@@ -2405,7 +2404,7 @@ yyreduce:
     break;
 
   case 66:
-#line 531 "compiler.y"
+#line 530 "compiler.y"
     {
     // ^=
     (yyval.assignkind) = t_XOR_ASSIGN;
@@ -2413,7 +2412,7 @@ yyreduce:
     break;
 
   case 67:
-#line 535 "compiler.y"
+#line 534 "compiler.y"
     {
     // |=
     (yyval.assignkind) = t_OR_ASSIGN;
@@ -2421,7 +2420,7 @@ yyreduce:
     break;
 
   case 68:
-#line 543 "compiler.y"
+#line 542 "compiler.y"
     {
     //赋值表达式
     (yyval.expN) = create_exp_tree(17);
@@ -2432,7 +2431,7 @@ yyreduce:
     break;
 
   case 69:
-#line 550 "compiler.y"
+#line 549 "compiler.y"
     {
     //逗号表达式
     (yyval.expN) = create_exp_tree(17);
@@ -2443,7 +2442,7 @@ yyreduce:
     break;
 
   case 70:
-#line 560 "compiler.y"
+#line 559 "compiler.y"
     {
     (yyval.expN) = create_exp_tree(15);
     (yyval.expN)->info.const_info.cond_exp = (yyvsp[(1) - (1)].expN);
@@ -2452,14 +2451,14 @@ yyreduce:
     break;
 
   case 71:
-#line 568 "compiler.y"
+#line 567 "compiler.y"
     {
     (yyval.declarationN) = create_declaration_tree((yyvsp[(1) - (2)].typekind));
 }
     break;
 
   case 72:
-#line 571 "compiler.y"
+#line 570 "compiler.y"
     {
     (yyval.declarationN) = create_declaration_tree((yyvsp[(1) - (3)].typekind));
     (yyval.declarationN)->decl_list = (yyvsp[(2) - (3)].declaratorN);
@@ -2468,14 +2467,14 @@ yyreduce:
     break;
 
   case 73:
-#line 580 "compiler.y"
+#line 579 "compiler.y"
     {
     (yyval.declaratorN) = (yyvsp[(1) - (1)].declaratorN);
 }
     break;
 
   case 74:
-#line 583 "compiler.y"
+#line 582 "compiler.y"
     {
     (yyval.declaratorN) = (yyvsp[(1) - (3)].declaratorN);
     while((yyvsp[(1) - (3)].declaratorN)->next != NULL)
@@ -2485,14 +2484,14 @@ yyreduce:
     break;
 
   case 75:
-#line 592 "compiler.y"
+#line 591 "compiler.y"
     {
     (yyval.declaratorN) = (yyvsp[(1) - (1)].declaratorN);
 }
     break;
 
   case 76:
-#line 595 "compiler.y"
+#line 594 "compiler.y"
     {
     (yyval.declaratorN) = create_declarator_tree((yyvsp[(1) - (3)].declaratorN),(yyvsp[(3) - (3)].initN));
     (yyval.declaratorN)->line = (yyvsp[(1) - (3)].declaratorN)->line;
@@ -2500,42 +2499,42 @@ yyreduce:
     break;
 
   case 77:
-#line 604 "compiler.y"
+#line 603 "compiler.y"
     {
     (yyval.typekind) = t_VOID;
 }
     break;
 
   case 78:
-#line 607 "compiler.y"
+#line 606 "compiler.y"
     {
     (yyval.typekind) = t_CHAR;
 }
     break;
 
   case 79:
-#line 610 "compiler.y"
+#line 609 "compiler.y"
     {
     (yyval.typekind) = t_INT;
 }
     break;
 
   case 80:
-#line 613 "compiler.y"
+#line 612 "compiler.y"
     {
     (yyval.typekind) = t_DOUBLE;
 }
     break;
 
   case 81:
-#line 616 "compiler.y"
+#line 615 "compiler.y"
     {
     (yyval.typekind) = t_BOOL;
 }
     break;
 
   case 82:
-#line 624 "compiler.y"
+#line 623 "compiler.y"
     {
     //变量
     (yyval.declaratorN) = create_declarator_tree(0);
@@ -2545,7 +2544,7 @@ yyreduce:
     break;
 
   case 83:
-#line 630 "compiler.y"
+#line 629 "compiler.y"
     {
     //.....
     (yyval.declaratorN) = (yyvsp[(2) - (3)].declaratorN);
@@ -2553,7 +2552,7 @@ yyreduce:
     break;
 
   case 84:
-#line 634 "compiler.y"
+#line 633 "compiler.y"
     {
     //数组
     //printf("assignment_expression");
@@ -2566,7 +2565,7 @@ yyreduce:
     break;
 
   case 85:
-#line 643 "compiler.y"
+#line 642 "compiler.y"
     {
     //数组
     (yyval.declaratorN) = create_declarator_tree(1);
@@ -2578,7 +2577,7 @@ yyreduce:
     break;
 
   case 86:
-#line 651 "compiler.y"
+#line 650 "compiler.y"
     {
     //函数
     (yyval.declaratorN) = create_declarator_tree(2);
@@ -2590,7 +2589,7 @@ yyreduce:
     break;
 
   case 87:
-#line 659 "compiler.y"
+#line 658 "compiler.y"
     {
     //函数
     (yyval.declaratorN) = create_declarator_tree(2);
@@ -2602,7 +2601,7 @@ yyreduce:
     break;
 
   case 88:
-#line 667 "compiler.y"
+#line 666 "compiler.y"
     {
     //函数
     (yyval.declaratorN) = create_declarator_tree(2);
@@ -2614,14 +2613,14 @@ yyreduce:
     break;
 
   case 89:
-#line 680 "compiler.y"
+#line 679 "compiler.y"
     {
     (yyval.paraN) = (yyvsp[(1) - (1)].paraN);
 }
     break;
 
   case 90:
-#line 683 "compiler.y"
+#line 682 "compiler.y"
     {
     (yyval.paraN) = (yyvsp[(1) - (3)].paraN);
     while((yyvsp[(1) - (3)].paraN)->next != NULL)
@@ -2631,7 +2630,7 @@ yyreduce:
     break;
 
   case 91:
-#line 692 "compiler.y"
+#line 691 "compiler.y"
     {
     (yyval.paraN) = create_param_tree((yyvsp[(1) - (2)].typekind));
     (yyval.paraN)->declarator = (yyvsp[(2) - (2)].declaratorN);
@@ -2639,21 +2638,21 @@ yyreduce:
     break;
 
   case 92:
-#line 696 "compiler.y"
+#line 695 "compiler.y"
     {
     (yyval.paraN) = create_param_tree((yyvsp[(1) - (1)].typekind));
 }
     break;
 
   case 93:
-#line 702 "compiler.y"
+#line 701 "compiler.y"
     {
     (yyval.IDN) = (yyvsp[(1) - (1)].IDN);
 }
     break;
 
   case 94:
-#line 705 "compiler.y"
+#line 704 "compiler.y"
     {
     (yyval.IDN) = (yyvsp[(1) - (3)].IDN);
     while((yyvsp[(1) - (3)].IDN)->next != NULL)
@@ -2663,7 +2662,7 @@ yyreduce:
     break;
 
   case 95:
-#line 715 "compiler.y"
+#line 714 "compiler.y"
     {
     (yyval.initN) = create_initializer_tree(0);
     (yyval.initN)->info.assign_exp = (yyvsp[(1) - (1)].expN);
@@ -2671,7 +2670,7 @@ yyreduce:
     break;
 
   case 96:
-#line 719 "compiler.y"
+#line 718 "compiler.y"
     {
     //列表初始化 {1,1,1}
     (yyval.initN) = create_initializer_tree(1);
@@ -2680,7 +2679,7 @@ yyreduce:
     break;
 
   case 97:
-#line 724 "compiler.y"
+#line 723 "compiler.y"
     {//init_list->next
     //列表初始化 {1,1,1,}
     (yyval.initN) = create_initializer_tree(1);
@@ -2689,7 +2688,7 @@ yyreduce:
     break;
 
   case 98:
-#line 732 "compiler.y"
+#line 731 "compiler.y"
     {
     (yyval.initl) = create_initial_list_tree(0);
     (yyval.initl)->initer = (yyvsp[(1) - (1)].initN);
@@ -2697,7 +2696,7 @@ yyreduce:
     break;
 
   case 99:
-#line 736 "compiler.y"
+#line 735 "compiler.y"
     {
     (yyval.initl) = create_initial_list_tree(1);
     (yyval.initl)->initer = (yyvsp[(2) - (2)].initN);
@@ -2706,7 +2705,7 @@ yyreduce:
     break;
 
   case 100:
-#line 741 "compiler.y"
+#line 740 "compiler.y"
     {// 在分析时需要判断next == NULL来确定是否到这个list的结尾
     (yyval.initl) = (yyvsp[(1) - (3)].initl);
     while((yyvsp[(1) - (3)].initl)->next != NULL)
@@ -2718,7 +2717,7 @@ yyreduce:
     break;
 
   case 101:
-#line 749 "compiler.y"
+#line 748 "compiler.y"
     {
     (yyval.initl) = (yyvsp[(1) - (4)].initl);
     while((yyvsp[(1) - (4)].initl)->next != NULL)
@@ -2730,21 +2729,21 @@ yyreduce:
     break;
 
   case 102:
-#line 760 "compiler.y"
+#line 759 "compiler.y"
     {
     (yyval.design) = (yyvsp[(1) - (2)].design);
 }
     break;
 
   case 103:
-#line 766 "compiler.y"
+#line 765 "compiler.y"
     {
     (yyval.design) = (yyvsp[(1) - (1)].design);
 }
     break;
 
   case 104:
-#line 769 "compiler.y"
+#line 768 "compiler.y"
     {
     (yyval.design) = (yyvsp[(1) - (2)].design);
     while((yyvsp[(1) - (2)].design)->next != NULL)
@@ -2754,7 +2753,7 @@ yyreduce:
     break;
 
   case 105:
-#line 778 "compiler.y"
+#line 777 "compiler.y"
     {
     (yyval.design) = create_design_tree(0);
     (yyval.design)->info.logical_or_exp = (yyvsp[(2) - (3)].expN);
@@ -2762,7 +2761,7 @@ yyreduce:
     break;
 
   case 106:
-#line 782 "compiler.y"
+#line 781 "compiler.y"
     {
     (yyval.design) = create_design_tree(1);
     (yyval.design)->info.ID = (yyvsp[(2) - (2)].IDN);
@@ -2770,49 +2769,49 @@ yyreduce:
     break;
 
   case 107:
-#line 790 "compiler.y"
+#line 789 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 108:
-#line 793 "compiler.y"
+#line 792 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 109:
-#line 796 "compiler.y"
+#line 795 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 110:
-#line 799 "compiler.y"
+#line 798 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 111:
-#line 802 "compiler.y"
+#line 801 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 112:
-#line 805 "compiler.y"
+#line 804 "compiler.y"
     {
     (yyval.statN) = (yyvsp[(1) - (1)].statN);
 }
     break;
 
   case 113:
-#line 812 "compiler.y"
+#line 811 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(0);
     (yyval.statN)->stat_info.label_info.ID = (yyvsp[(1) - (3)].IDN);
@@ -2822,7 +2821,7 @@ yyreduce:
     break;
 
   case 114:
-#line 818 "compiler.y"
+#line 817 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(0);
     (yyval.statN)->stat_info.label_info.ID = NULL;
@@ -2832,7 +2831,7 @@ yyreduce:
     break;
 
   case 115:
-#line 828 "compiler.y"
+#line 827 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(1);
     (yyval.statN)->stat_info.compound_info.type2 = SINGLE;
@@ -2841,7 +2840,7 @@ yyreduce:
     break;
 
   case 116:
-#line 833 "compiler.y"
+#line 832 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(1);
     (yyval.statN)->stat_info.compound_info.type2 = GROUP;
@@ -2850,7 +2849,7 @@ yyreduce:
     break;
 
   case 117:
-#line 841 "compiler.y"
+#line 840 "compiler.y"
     {
     (yyval.block) = (yyvsp[(1) - (1)].block);
     
@@ -2858,7 +2857,7 @@ yyreduce:
     break;
 
   case 118:
-#line 845 "compiler.y"
+#line 844 "compiler.y"
     {
     (yyval.block) = (yyvsp[(1) - (2)].block);
     while((yyvsp[(1) - (2)].block)->next != NULL)
@@ -2868,7 +2867,7 @@ yyreduce:
     break;
 
   case 119:
-#line 854 "compiler.y"
+#line 853 "compiler.y"
     {
     (yyval.block) = create_block_tree();
     (yyval.block)->declaration = (yyvsp[(1) - (1)].declarationN);
@@ -2876,7 +2875,7 @@ yyreduce:
     break;
 
   case 120:
-#line 858 "compiler.y"
+#line 857 "compiler.y"
     {
     (yyval.block) = create_block_tree();
     (yyval.block)->statement = (yyvsp[(1) - (1)].statN);
@@ -2884,7 +2883,7 @@ yyreduce:
     break;
 
   case 121:
-#line 865 "compiler.y"
+#line 864 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(2);
     (yyval.statN)->stat_info.exp_info.exp = NULL;
@@ -2892,7 +2891,7 @@ yyreduce:
     break;
 
   case 122:
-#line 869 "compiler.y"
+#line 868 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(2);
     (yyval.statN)->stat_info.exp_info.exp = (yyvsp[(1) - (2)].expN);
@@ -2900,7 +2899,7 @@ yyreduce:
     break;
 
   case 123:
-#line 877 "compiler.y"
+#line 876 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(3);
     (yyval.statN)->stat_info.select_info.type2 = t_IF;
@@ -2911,7 +2910,7 @@ yyreduce:
     break;
 
   case 124:
-#line 884 "compiler.y"
+#line 883 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(3);
     (yyval.statN)->stat_info.select_info.type2 = t_IF_ELSE;
@@ -2922,7 +2921,7 @@ yyreduce:
     break;
 
   case 125:
-#line 891 "compiler.y"
+#line 890 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(3);
     (yyval.statN)->stat_info.select_info.type2 = t_SWITCH;
@@ -2933,7 +2932,7 @@ yyreduce:
     break;
 
   case 126:
-#line 902 "compiler.y"
+#line 901 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = t_WHILE;
@@ -2946,7 +2945,7 @@ yyreduce:
     break;
 
   case 127:
-#line 911 "compiler.y"
+#line 910 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = t_DO_WHILE;
@@ -2959,7 +2958,7 @@ yyreduce:
     break;
 
   case 128:
-#line 920 "compiler.y"
+#line 919 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = FOR1;
@@ -2972,7 +2971,7 @@ yyreduce:
     break;
 
   case 129:
-#line 929 "compiler.y"
+#line 928 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = FOR2;
@@ -2985,7 +2984,7 @@ yyreduce:
     break;
 
   case 130:
-#line 938 "compiler.y"
+#line 937 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = FOR3;
@@ -2998,7 +2997,7 @@ yyreduce:
     break;
 
   case 131:
-#line 947 "compiler.y"
+#line 946 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(4);
     (yyval.statN)->stat_info.iter_info.type2 = FOR4;
@@ -3011,7 +3010,7 @@ yyreduce:
     break;
 
   case 132:
-#line 960 "compiler.y"
+#line 959 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(5);
     (yyval.statN)->stat_info.jump_info.type2 = t_GOTO;
@@ -3021,7 +3020,7 @@ yyreduce:
     break;
 
   case 133:
-#line 966 "compiler.y"
+#line 965 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(5);
     (yyval.statN)->stat_info.jump_info.type2 = t_CONTINUE;
@@ -3031,7 +3030,7 @@ yyreduce:
     break;
 
   case 134:
-#line 972 "compiler.y"
+#line 971 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(5);
     (yyval.statN)->stat_info.jump_info.type2 = t_BREAK;
@@ -3041,7 +3040,7 @@ yyreduce:
     break;
 
   case 135:
-#line 978 "compiler.y"
+#line 977 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(5);
     (yyval.statN)->stat_info.jump_info.type2 = RETURN1;
@@ -3051,7 +3050,7 @@ yyreduce:
     break;
 
   case 136:
-#line 984 "compiler.y"
+#line 983 "compiler.y"
     {
     (yyval.statN) = create_stat_tree(5);
     (yyval.statN)->stat_info.jump_info.type2 = RETURN2;
@@ -3061,14 +3060,14 @@ yyreduce:
     break;
 
   case 137:
-#line 993 "compiler.y"
+#line 992 "compiler.y"
     {
     (yyval.rootN) = (yyvsp[(1) - (1)].rootN);
 }
     break;
 
   case 138:
-#line 996 "compiler.y"
+#line 995 "compiler.y"
     {
     (yyval.rootN) = (yyvsp[(1) - (2)].rootN);
     while((yyvsp[(1) - (2)].rootN)->next != NULL)
@@ -3078,7 +3077,7 @@ yyreduce:
     break;
 
   case 139:
-#line 1005 "compiler.y"
+#line 1004 "compiler.y"
     {
     (yyval.rootN) = create_root_tree();
     (yyval.rootN)->type = Func_T;
@@ -3089,7 +3088,7 @@ yyreduce:
     break;
 
   case 140:
-#line 1012 "compiler.y"
+#line 1011 "compiler.y"
     {
     (yyval.rootN) = create_root_tree();
     (yyval.rootN)->type = Decl_T;
@@ -3100,7 +3099,7 @@ yyreduce:
     break;
 
   case 141:
-#line 1022 "compiler.y"
+#line 1021 "compiler.y"
     {
     //这个形式的函数定义好像没有见过，基本用不上
     (yyval.funcN) = create_func_tree((yyvsp[(1) - (4)].typekind));
@@ -3109,12 +3108,11 @@ yyreduce:
     (yyval.funcN)->stat_list = (yyvsp[(4) - (4)].statN);
     (yyval.funcN)->beg_line = (yyvsp[(2) - (4)].declaratorN)->line;
     //结束的行数得找一下
-    (yyval.funcN)->beg_line = (yyvsp[(4) - (4)].statN)->line;
 }
     break;
 
   case 142:
-#line 1032 "compiler.y"
+#line 1030 "compiler.y"
     {
     //这个文法对应的函数形式 int func_name(int , int b) {}
     (yyval.funcN) = create_func_tree((yyvsp[(1) - (3)].typekind));
@@ -3123,19 +3121,18 @@ yyreduce:
     (yyval.funcN)->stat_list = (yyvsp[(3) - (3)].statN);
     (yyval.funcN)->beg_line = (yyvsp[(2) - (3)].declaratorN)->line;
     //结束的行数得找一下
-    (yyval.funcN)->beg_line = (yyvsp[(3) - (3)].statN)->line;
 }
     break;
 
   case 143:
-#line 1045 "compiler.y"
+#line 1042 "compiler.y"
     {
     (yyval.declarationN) = (yyvsp[(1) - (1)].declarationN);
 }
     break;
 
   case 144:
-#line 1048 "compiler.y"
+#line 1045 "compiler.y"
     {
     (yyval.declarationN) = (yyvsp[(1) - (2)].declarationN);
     while((yyvsp[(1) - (2)].declarationN)->next != NULL)
@@ -3146,7 +3143,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 3150 "y.tab.c"
+#line 3147 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3360,7 +3357,7 @@ yyreturn:
 }
 
 
-#line 1056 "compiler.y"
+#line 1053 "compiler.y"
 
 
 
@@ -3372,7 +3369,6 @@ void yyerror(char const *s)
 
 
 int main(int argc,char* argv[]) {
-    
     yyin = fopen("/Users/egoist/Desktop/test.c","r");
     
     //freopen("output/output.txt","w", stdout);
@@ -3380,8 +3376,9 @@ int main(int argc,char* argv[]) {
     printf("\n");
     //eval(root,0);    //输出语法分析树
     
-    parser praser(root);
+    parser parser(root);
     
+    //freeGramTree(root);
     
     fclose(yyin);
     return 0;

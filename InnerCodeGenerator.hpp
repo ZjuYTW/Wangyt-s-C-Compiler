@@ -11,6 +11,8 @@
 
 #include "ast.hpp"
 #include "block.hpp"
+#include "Optimizer.hpp"
+#include "Codegen.hpp"
 #include <string>
 
 using namespace std;

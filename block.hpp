@@ -4,7 +4,9 @@
 #include <map>
 #include "ast.hpp"
 
-struct VarNode{//这些个节点是把抽象语法树的那些节点做进一步的结合
+
+//这些个节点是把抽象语法树的那些节点做进一步的抽象提取
+struct VarNode{
     string name;
     type_specifier_kind type;
     int num = -1;

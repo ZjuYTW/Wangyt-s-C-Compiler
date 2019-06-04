@@ -1,7 +1,7 @@
 #include "parser.hpp"
 #include <string>
 
-
+//*******************************************Initial part***********************************************
 parser::parser(root_Node* root){
     this->root = root;
     parserInit();
@@ -17,7 +17,11 @@ void parser::parserInit(){
     
     parse(root);
 }
+//******************************************************************************************************
 
+//************************************最高级部分的PARSE********************************************************
+
+//*******************************************Parse**************************************************
 void parser::parse(root_Node* rNode){
     if(rNode == NULL)
         return;
@@ -35,7 +39,10 @@ void parser::parse(root_Node* rNode){
     }
     parse(rNode->next);
 }
+//******************************************************************************************************
 
+//**************************************二级单元PARSE******************************************************
+//*******************************parse function& function decl********************************************
 void parser::parseFunc(func_Node* fNode){
     type_specifier_kind cur_type = fNode->type;
     declarator_Node *func_declarator = fNode->func_name;
@@ -110,6 +117,19 @@ void parser::parseFunc(func_Node* fNode){
         stack.pop_back();
     }
 }
+
+
+void parser::parseDecl(declaration_Node* dNode){
+    type_specifier_kind cur_type = dNode->type;
+    if(cur_type == t_VOID)
+        error(dNode->line,"Variable has incomplete type 'void'");
+    if(dNode->decl_list == NULL)
+        return;
+    parseInitDeclList(dNode->decl_list, cur_type);
+}
+
+//**************************************三级单元的PARSE**************************************************
+//*****************************parse parameter & stat & decl & exp********************************************
 
 //函数的定义需要获得形参数，声明不需要
 void parser::parseParam(param_Node* decl_Node, string func_name, bool Isdefinition){
@@ -186,12 +206,21 @@ void parser::parseStat(stat_Node* stat){
     return;
 }
 
+VarNode parser::parseExp(exp_Node* exp){
+    VarNode resnode;
+    resnode = parseAssignExp(exp->info.exp_root.assign_exp);
+    if(exp->info.exp_root.next_exp != NULL)
+        resnode = parseExp(exp->info.exp_root.next_exp);
+    return resnode;
+}
+
 void parser::parseLabelStat(stat_Node* lab_stat){
     //暂时先没做
     return;
 }
 
-
+//**************************************四级单元的PARSE**************************************************
+//***************************************STATEMENT*****************************************************
 
 void parser::parseCompoundStat(stat_Node* Compoud_stat){
     if(Compoud_stat->stat_info.compound_info.type2 == SINGLE)//type == SINGLE 说明是空语句
@@ -218,15 +247,6 @@ void parser::parseExpStat(stat_Node* Exp_stat){
     parseExp(Exp_stat->stat_info.exp_info.exp);
 }
 
-VarNode parser::parseExp(exp_Node* exp){
-    VarNode resnode;
-    resnode = parseAssignExp(exp->info.exp_root.assign_exp);
-    if(exp->info.exp_root.next_exp != NULL)
-        resnode = parseExp(exp->info.exp_root.next_exp);
-    return resnode;
-}
-
-
 void parser::parseSelectStat(stat_Node* Select_stat){
     select_kind cur_type = Select_stat->stat_info.select_info.type2;
     switch (cur_type) {
@@ -243,7 +263,7 @@ void parser::parseSelectStat(stat_Node* Select_stat){
             break;
     }
 }
-
+//这个其实是stat, 打错了名字...暂时先不改了
 void parser::parseIfExp(exp_Node* exp, stat_Node* stat){
     block newblock;
     stack.push_back(newblock);
@@ -254,14 +274,14 @@ void parser::parseIfExp(exp_Node* exp, stat_Node* stat){
     string lab2 = innerCodeGenerator.getLabelname();
     
     if(exp_rnode.type == t_BOOL)
-        innerCodeGenerator.addCode("IF" + exp_rnode.boolstr + " GOTO " + lab1);
+        innerCodeGenerator.addCode("IF " + exp_rnode.boolstr + " GOTO " + lab1);
     else{
         string temp_name = "temp" + inttostr(innerCodeGenerator.tempNum);
         innerCodeGenerator.tempNum++;
         VarNode newNode = createTempVar(temp_name, t_INT);
         innerCodeGenerator.addCode(temp_name + " := #0");
         
-        innerCodeGenerator.addCode("IF" + innerCodeGenerator.getNodename(newNode) + " != " + temp_name + " GOTO " + lab1);
+        innerCodeGenerator.addCode("IF " + innerCodeGenerator.getNodename(newNode) + " != " + temp_name + " GOTO " + lab1);
     }
     
     innerCodeGenerator.addCode("GOTO " + lab2);
@@ -285,7 +305,7 @@ void parser::parseIfElseExp(exp_Node *exp, stat_Node *stat1, stat_Node *stat2){
     string lab3 = innerCodeGenerator.getLabelname();
     
     if(exp_rnode.type == t_BOOL){
-        innerCodeGenerator.addCode("IF" + exp_rnode.boolstr + " GOTO " + lab1);
+        innerCodeGenerator.addCode("IF " + exp_rnode.boolstr + " GOTO " + lab1);
     }
     else{
         string temp_name = "temp" + inttostr(innerCodeGenerator.tempNum);
@@ -640,16 +660,8 @@ void parser::parseBreak(stat_Node *stat){
     return;
 }
 
-
-
-void parser::parseDecl(declaration_Node* dNode){
-    type_specifier_kind cur_type = dNode->type;
-    if(cur_type == t_VOID)
-        error(dNode->line,"Variable has incomplete type 'void'");
-    if(dNode->decl_list == NULL)
-        return;
-    parseInitDeclList(dNode->decl_list, cur_type);
-}
+//**************************************四级单元的PARSE**************************************************
+//****************************************DECLARATION*****************************************************
 
 void parser::parseInitDeclList(declarator_Node *decl_list, type_specifier_kind cur_type){
     if(decl_list == NULL)
@@ -795,7 +807,7 @@ void parser::parseFuncDecl(declarator_Node *dnode, type_specifier_kind cur_type)
     parseParam(parmlist, funcName, false);
 }
 
-
+//**************************************四级单元的PARSE**************************************************
 //*******************************************Expression*********************************************
 
 VarNode parser::parseAssignExp(exp_Node *assignExp){
@@ -807,7 +819,7 @@ VarNode parser::parseAssignExp(exp_Node *assignExp){
         VarNode node2 = parseAssignExp(assignExp->info.assign_info.assign_exp);
         VarNode node3;
         if(op == t_ASSIGNMENT){
-            node1 = node2;
+            node3 = node2;
         }
         else{
             string temp_name = "temp" + inttostr(innerCodeGenerator.tempNum);
@@ -885,10 +897,6 @@ VarNode parser::parseAssignExp(exp_Node *assignExp){
         return node1;
     }
 }
-
-//VarNode parser::parseConstExp(Exp_Node *Constexp)
-
-//VarNode parser::parseCondiExp(Exp_Node *Condexp)
 
 VarNode parser::parseLogicalOrExp(exp_Node *logicaloexp){
     if(logicaloexp->info.logi_or_info.logical_or_exp == NULL){
@@ -1173,7 +1181,8 @@ VarNode parser::parseMulExp(exp_Node *Mulexp){
 VarNode parser::parseUnaryExp(exp_Node *Unaryexp){
     if(Unaryexp->info.unary_info.type2 == unary_NA)
         return parsePostExp(Unaryexp->info.unary_info.post_exp);
-    else if(Unaryexp->info.unary_info.type2 == t_INC_OP){
+    
+    else if(Unaryexp->info.unary_info.type2 == t_INC_OP){//++
         VarNode rnode = parseUnaryExp(Unaryexp->info.unary_info.unary_exp);
         if(rnode.type != t_INT)
             error(Unaryexp->line, "++ opearation can only use for int type");
@@ -1193,7 +1202,7 @@ VarNode parser::parseUnaryExp(exp_Node *Unaryexp){
         return rnode;
     }
     
-    else if(Unaryexp->info.unary_info.type2 == t_DEC_OP){
+    else if(Unaryexp->info.unary_info.type2 == t_DEC_OP){//--
         VarNode rnode = parseUnaryExp(Unaryexp->info.unary_info.unary_exp);
         if(rnode.type != t_INT)
             error(Unaryexp->line, "-- opearation can only use for int type");
@@ -1276,8 +1285,7 @@ VarNode parser::parsePostExp(exp_Node *Postexp){
     else if(Postexp->info.post_info.type2 == ARRAY_CALL){
         exp_Node *next_Postexp = Postexp->info.post_info.post_exp;
         //处理primExp 得到数组 名字
-        VarNode rnode = parsePrimExp(next_Postexp->info.post_info.arg_list);
-        string arrayName = rnode.name;
+        string arrayName = next_Postexp->info.post_info.arg_list->info.prim_info.detail.ID->name;
         
         VarNode enode = parseExp(Postexp->info.post_info.arg_list);
         ArrayNode anode = getArryNode(arrayName);
@@ -1330,18 +1338,17 @@ VarNode parser::parsePostExp(exp_Node *Postexp){
                 innerCodeGenerator.addCode(temp_name2 + " := " + innerCodeGenerator.getNodename(enode) + " * " +tempname3);
             }
             
-            innerCodeGenerator.addCode(temp_name + " :=&" + innerCodeGenerator.getArrNodename(anode) + " + " + innerCodeGenerator.getNodename(tempvar2));
+            innerCodeGenerator.addCode(temp_name + " := &" + innerCodeGenerator.getArrNodename(anode) + " + " + innerCodeGenerator.getNodename(tempvar2));
             return tempVar;
         }
         
-        innerCodeGenerator.addCode(temp_name + " :=&" + innerCodeGenerator.getArrNodename(anode) + " + " + innerCodeGenerator.getNodename(enode));
+        innerCodeGenerator.addCode(temp_name + " := &" + innerCodeGenerator.getArrNodename(anode) + " + " + innerCodeGenerator.getNodename(enode));
         return tempVar;
     }
     else if(Postexp->info.post_info.type2 == FUNC_CALL){
         exp_Node *next_Postexp = Postexp->info.post_info.post_exp;
-        //处理primExp 得到数组 名字
-        VarNode rnode = parsePrimExp(next_Postexp->info.post_info.arg_list);
-        string funcName = rnode.name;
+        //处理primExp 得到函数名字
+        string funcName = next_Postexp->info.post_info.arg_list->info.prim_info.detail.ID->name;
         
         VarNode newNode;
         
@@ -1393,6 +1400,7 @@ VarNode parser::parsePostExp(exp_Node *Postexp){
         }
         return newNode;
     }
+    
     else if(Postexp->info.post_info.type2 == DEC){
         VarNode rnode = parsePostExp(Postexp->info.post_info.post_exp);
         
@@ -1456,7 +1464,7 @@ VarNode parser::parsePrimExp(exp_Node *Primexp){
         string name = Primexp->info.prim_info.detail.ID->name;
         VarNode rnode = lookupNode(name);
         if(rnode.num < 0)
-            error(Primexp->line, "Undefined variable" + name);
+            error(Primexp->line, "Undefined variable " + name);
         return rnode;
     }
     else if(Primexp->info.prim_info.type2 == t_TRUE || Primexp->info.prim_info.type2 == t_FALSE){
@@ -1535,6 +1543,8 @@ VarNode parser::parseConstExp(exp_Node *Constexp){
     return parseCondiExp(Constexp->info.const_info.cond_exp);
 }
 
+
+//**************************************四级单元的PARSE**************************************************
 //************************************************Sundry functions*********************************************
 bool parser::lookupCurVar(string name){
     return stack.back().varMap.find(name) != stack.back().varMap.end();
@@ -1597,6 +1607,18 @@ type_specifier_kind parser::getFuncRType(){
         if(stack[i].isfunc)
             return stack[i].func.rettype;
     }
+    switch (N) {
+        case 1:
+            int i ;
+            break;
+        case 2:
+            i = 10;
+            break;
+            
+        default:
+            break;
+    }
+    
     return t_VOID;
 }
 

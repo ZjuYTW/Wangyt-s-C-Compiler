@@ -20,7 +20,8 @@ void ICG::addCode(string code){
 }
 
 void ICG::printCode(){
-    //代码优化部分
+    Optimizer op(codeList);
+    codeList = op.getCode();
     
     ofstream fout("innerCode.txt");
     cout << "\n===============INNERCODE===================" <<endl;
@@ -28,6 +29,8 @@ void ICG::printCode(){
         cout<< *iter <<"\n";
         fout<< *iter <<"\n";
     }
+    fout.close();
+    codegen cg(op.m_map);
 }
 
 string ICG::createCodeforVar(string tempname, string op, VarNode node1, VarNode node2){
